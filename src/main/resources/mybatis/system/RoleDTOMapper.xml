@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.byoa.system.dao.RoleDTOMapper">
+  <resultMap id="BaseResultMap" type="com.byoa.system.domain.RoleDTO">
+    <result column="role_id" jdbcType="BIGINT" property="roleId" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="description" jdbcType="VARCHAR" property="description" />
+    <result column="statu" jdbcType="INTEGER" property="statu" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="create_user_id" jdbcType="BIGINT" property="createUserId" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="update_user_id" jdbcType="BIGINT" property="updateUserId" />
+    <result column="version" jdbcType="INTEGER" property="version" />
+  </resultMap>
+
+  <sql id="base_column_list">
+      role_id, name, description,
+      statu, create_time, create_user_id,
+      update_time, update_user_id, version
+  </sql>
+
+  <select id="get" resultType="com.byoa.system.domain.RoleDTO">
+    select
+    <include refid="base_column_list"/>
+    from sys_role where role_id = #{roleId}
+  </select>
+
+  <select id="list" resultMap="BaseResultMap">
+    select
+    <include refid="base_column_list"/>
+    from sys_role
+    <where>
+      <if test="roleId != null and roleId !=''">and role_id = #{roleId}</if>
+      <if test="name != null and name !=''">and name = #{name}</if>
+      <if test="description != null and description !=''">and description = #{description}</if>
+      <if test="statu != null and statu !=''">and statu = #{statu}</if>
+    </where>
+    <choose>
+      <when test="sort != null and sort.trim() != ''">
+        order by ${sort} ${order}
+      </when>
+      <otherwise>
+        order by role_id desc
+      </otherwise>
+    </choose>
+    <if test="offset != null and limit != null">
+      limit #{offset}, #{limit}
+    </if>
+  </select>
+
+  <select id="count" resultType="int">
+    select count(*) from sys_role
+    <where>
+      <if test="roleId != null and roleId !=''">and role_id = #{roleId}</if>
+      <if test="name != null and name !=''">and name = #{name}</if>
+      <if test="description != null and description !=''">and description = #{description}</if>
+      <if test="statu != null and statu !=''">and statu = #{statu}</if>
+    </where>
+  </select>
+
+  <insert id="save" parameterType="com.byoa.system.domain.RoleDTO" useGeneratedKeys="true" keyProperty="roleId">
+    insert into sys_role
+    (
+    name,
+    description
+    )
+    values
+    (
+      #{name},
+      #{description}
+    )
+  </insert>
+
+  <update id="update" parameterType="com.byoa.system.domain.RoleDTO">
+    update sys_role
+    <set>
+      <if test="roleId != null and roleId !=''"> role_id = #{roleId},</if>
+      <if test="name != null and name !=''"> name = #{name},</if>
+      <if test="description != null and description !=''"> description = #{description},</if>
+      <if test="statu != null and statu !=''"> statu = #{statu},</if>
+    </set>
+    where role_id = #{roleId}
+  </update>
+
+  <delete id="remove">
+    delete from sys_role where  role_id = #{roleId}
+  </delete>
+
+  <delete id="batchRemove">
+    delete from sys_role where role_id in
+    <foreach item="roleId" collection="array" open="(" separator=","
+             close=")">
+      #{roleId}
+    </foreach>
+  </delete>
+</mapper>

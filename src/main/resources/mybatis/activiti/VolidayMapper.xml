@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.byoa.activiti.dao.VolidayDao">
+
+    <select id="get" resultType="com.byoa.activiti.domain.VolidayDO">
+		select `id`,`PROC_INS_ID`,`USER_ID`,`startDate`,`stopDate`,`leader_text`,`hr_text`,`reason`,`VOL_TYPE`,`flag` from voliday where id = #{value}
+	</select>
+
+    <select id="list" resultType="com.byoa.activiti.domain.VolidayDO">
+        select  `id`,`PROC_INS_ID`,`USER_ID`,`startDate`,`stopDate`,`leader_text`,`hr_text`,`reason`,`VOL_TYPE`,`flag` from voliday
+        <where>
+            <if test="id != null and id != ''"> and id = #{id} </if>
+            <if test="procInsId != null and procInsId != ''"> and PROC_INS_ID = #{procInsId} </if>
+            <if test="userId != null and userId != ''"> and USER_ID = #{userId} </if>
+            <if test="startDate !=null and startDate !=''">and startDate = #{startDate}</if>
+            <if test="stopDate !=null and stopDate !=''">and stopDate = #{stopDate}</if>
+            <if test="leaderText !=null and leaderText !=''">and leaderText = #{leaderText}</if>
+            <if test="hrText !=null and hrText !=''">and hrText = #{hrText}</if>
+            <if test="reason !=null and reason !=''">and reason = #{reason}</if>
+            <if test="VOL_TYPE !=null and VOL_TYPE  !=''">and type = #{type}</if>
+            <if test="flag != null and flag != ''"> and flag = #{flag} </if>
+        </where>
+        <choose>
+            <when test="sort != null and sort.trim() != ''">
+                order by ${sort} ${order}
+            </when>
+            <otherwise>
+                order by id desc
+            </otherwise>
+        </choose>
+        <if test="offset != null and limit != null">
+            limit #{offset}, #{limit}
+        </if>
+    </select>
+
+    <select id="count" resultType="int">
+        select count(*) from voliday
+        <where>
+            <if test="id != null and id != ''"> and id = #{id} </if>
+            <if test="procInsId != null and procInsId != ''"> and PROC_INS_ID = #{procInsId} </if>
+            <if test="userId != null and userId != ''"> and USER_ID = #{userId} </if>
+            <if test="startDate !=null and startDate !=''">and startDate = #{startDate}</if>
+            <if test="stopDate !=null and stopDate !=''">and stopDate = #{stopDate}</if>
+            <if test="leaderText !=null and leaderText !=''">and leaderText = #{leaderText}</if>
+            <if test="hrText !=null and hrText !=''">and hrText = #{hrText}</if>
+            <if test="reason !=null and reason !=''">and reason = #{reason}</if>
+            <if test="VOL_TYPE !=null and VOL_TYPE  !=''">and type = #{type}</if>
+            <if test="flag != null and flag != ''"> and flag = #{flag} </if>
+        </where>
+    </select>
+
+    <insert id="save" parameterType="com.byoa.activiti.domain.VolidayDO">
+		insert into voliday
+		(
+			`PROC_INS_ID`,
+			`USER_ID`,
+			`startDate`,
+			`stopDate`,
+			`leaderText`,
+			`hrText`,
+			`reason`,
+			`VOL_TYPE`,
+			`flag`
+		)
+		values
+		(
+			#{procInsId},
+			#{userId},
+			#{startDate},
+			#{stopDate},
+			#{leaderText},
+			#{hrText},
+			#{reason},
+			#{type},
+			#{flag}
+		)
+	</insert>
+
+    <update id="update" parameterType="com.byoa.activiti.domain.VolidayDO">
+        update voliday
+        <set>
+            <if test="procInsId != null and procInsId != ''">`PROC_INS_ID` = #{procInsId}, </if>
+            <if test="userId != null and userId != ''"> `USER_ID`= #{userId}, </if>
+            <if test="startDate !=null and startDate !=''">`startDate` = #{startDate},</if>
+            <if test="stopDate !=null and stopDate !=''">`stopDate` = #{stopDate},</if>
+            <if test="leaderText !=null and leaderText !=''">`leaderText` = #{leaderText},</if>
+            <if test="hrText !=null and hrText !=''">`hrText` = #{hrText},</if>
+            <if test="reason !=null and reason !=''">`reason` = #{reason},</if>
+            <if test="type !=null and type  !=''">`VOL_TYPE` = #{type},</if>
+            <if test="flag != null and flag != ''"> `flag` = #{flag},</if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <delete id="remove">
+		delete from voliday where id = #{value}
+	</delete>
+
+    <delete id="batchRemove">
+        delete from voliday where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

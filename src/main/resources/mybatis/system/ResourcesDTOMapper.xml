@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.byoa.system.dao.ResourcesDTOMapper">
+  <resultMap id="BaseResultMap" type="com.byoa.system.domain.ResourcesDTO">
+      <!--这里出现过错误-->
+    <id column="resources_id" jdbcType="BIGINT" property="resourcesId" />
+    <result column="parent_id" jdbcType="BIGINT" property="parentId"/>
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="type" jdbcType="INTEGER" property="type" />
+    <result column="url" jdbcType="VARCHAR" property="url" />
+    <result column="permission" jdbcType="VARCHAR" property="permission" />
+    <result column="statu" jdbcType="INTEGER" property="statu"/>
+    <result column="icon" jdbcType="VARCHAR" property="icon"/>
+    <result column="sort" jdbcType="INTEGER" property="sort"/>
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="create_user_id" jdbcType="BIGINT" property="createUserId"/>
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="update_user_id" jdbcType="BIGINT" property="updateUserId"/>
+    <result column="version" jdbcType="INTEGER" property="version"/>
+  </resultMap>
+
+  <resultMap id="SimpleResultMap" type="com.byoa.system.domain.ResourcesDTO">
+    <id column="resources_id" jdbcType="BIGINT" property="resourcesId" />
+    <result column="parent_id" jdbcType="BIGINT" property="parentId"/>
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="type" jdbcType="INTEGER" property="type" />
+    <result column="url" jdbcType="VARCHAR" property="url" />
+    <result column="permission" jdbcType="VARCHAR" property="permission" />
+    <result column="statu" jdbcType="INTEGER" property="statu"/>
+    <result column="icon" jdbcType="VARCHAR" property="icon"/>
+    <result column="sort" jdbcType="INTEGER" property="sort"/>
+  </resultMap>
+
+  <sql id="Base_Column_List">
+    resources_id, parent_id, name, type, url, permission, statu, icon,  sort, create_time, create_user_id,
+    update_time,update_user_id,version
+  </sql>
+
+  <sql id="Simple_Column_List">
+    resources_id, parent_id, name, type, url, permission, statu, icon,  sort, icon, sort
+  </sql>
+
+
+  <select id="getResourcesById" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List"/>
+    from sys_resources  where resources_id = #{resourcesId}
+  </select>
+
+
+
+
+  <select id="getAllResources" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List"/>
+    from sys_resources
+    <where>
+      <if test="resources_id != null and resources_id !=''">and resources_id =#{resourcesId} </if>
+      <if test="parent_id != null and parent_id !=''">and parent_id =#{parentId} </if>
+      <if test="name != null and name !=''">and  name=#{name} </if>
+      <if test="type != null and type !=''">and type =#{type} </if>
+      <if test="url != null and url !=''">and url =#{url} </if>
+      <if test="permission != null and permission !=''">and permission =#{permission} </if>
+      <if test="statu != null and statu !=''">and statu =#{statu} </if>
+      <if test="icon != null and icon !=''">and icon =#{icon} </if>
+<!--     <if test="sort != null and sort !=''">and sort =#{sort} </if>-->
+    </where>
+    <choose>
+      <when test="sort != null and sort.trim() != ''">
+         order by ${sort} ${order}
+      </when>
+      <otherwise>
+        order by resources_id
+      </otherwise>
+    </choose>
+  </select>
+
+  <select id="count" resultType="int">
+    select count(*) from sys_resources
+    <where>
+      <if test="resources_id != null and resources_id !=''">and resourcesId =#{resourcesId} </if>
+      <if test="parent_id != null and parent_id !=''">and parentId =#{parentId} </if>
+      <if test="name != null and name !=''">and  name=#{name} </if>
+      <if test="type != null and type !=''">and type =#{type} </if>
+      <if test="url != null and url !=''">and url =#{url} </if>
+      <if test="permission != null and permission !=''">and permission =#{permission} </if>
+      <if test="statu != null and statu !=''">and statu =#{statu} </if>
+      <if test="icon != null and icon !=''">and icon =#{icon} </if>
+      <if test="sort != null and sort !=''">and sort =#{sort} </if>
+    </where>
+  </select>
+
+
+  <insert id="insert" parameterType="com.byoa.system.domain.ResourcesDTO" useGeneratedKeys="true" keyProperty="resourcesId">
+    insert into sys_resources
+     (
+      parent_id,
+      name,
+      type,
+      url,
+      permission,
+      statu,
+      icon,
+      sort
+      )
+     values
+     (
+     #{parentId,jdbcType=BIGINT},
+     #{name,jdbcType=VARCHAR},
+     #{type,jdbcType=VARCHAR},
+     #{url,jdbcType=VARCHAR},
+     #{permission,jdbcType=VARCHAR},
+     #{statu,jdbcType=INTEGER},
+     #{icon,jdbcType=VARCHAR},
+     #{sort,jdbcType=INTEGER}
+     )
+  </insert>
+
+  <update id="update" parameterType="com.byoa.system.domain.ResourcesDTO">
+    update sys_resources
+    <set>
+        <if test="resourcesId != null and resourcesId !=''">`resources_id` =#{resourcesId}, </if>
+        <if test="parentId != null and parentId !=''">`parent_id` =#{parentId} ,</if>
+        <if test="name != null and name !=''">`name`=#{name} ,</if>
+        <if test="type != null and type !=''">`type` =#{type} ,</if>
+        <if test="url != null and url !=''">`url` =#{url} ,</if>
+        <if test="permission != null and permission !=''">`permission` =#{permission} ,</if>
+        <if test="statu != null and statu !=''">`statu` =#{statu} ,</if>
+        <if test="icon != null and icon !=''"> `icon` =#{icon} ,</if>
+        <if test="sort != null and sort !=''">`sort` =#{sort} </if>
+    </set>
+    where resources_id = #{resourcesId}
+  </update>
+
+
+  <delete id="remove">
+    delete from sys_resources
+    where resources_id = #{resourcesId}
+  </delete>
+
+  <delete id="batchRemove">
+    delete from sys_resources where resoureces_id in
+    <foreach collection="array" item="resourcesId"
+             open="(" separator="," close=")">
+       #{resourcesId}
+    </foreach>
+  </delete>
+
+  <select id="userPermission" resultType="string">
+     select distinct r.permission from sys_resources r
+     left join sys_role_resource rr on r.resources_id = rr.resources_id
+     left join sys_user_role ur on rr.role_id = ur.role_id
+     where ur.user_id = #{userId}
+  </select>
+
+  <select id="listResourcesByUserId" resultMap="BaseResultMap">
+     select distinct
+     r.resources_id,r.parent_id,r.name,r.url,r.permission,r.type,r.icon,
+     r.sort,r.create_time,r.create_user_id,r.update_time,r.update_user_id,r.version
+     from sys_resources r
+     left join
+     sys_role_resource sr
+     on r.resources_id = sr.resources_id
+     left join
+     sys_user_role su
+     on sr.role_id = su.role_id
+     where su.user_id = #{id}
+     and r.type in(0,1)
+     order by
+     r.sort
+  </select>
+</mapper>

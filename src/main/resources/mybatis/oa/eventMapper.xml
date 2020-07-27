@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.byoa.oa.dao.EventDao">
+    <resultMap id="BaseResultMap" type="com.byoa.oa.domain.Event">
+        <id column="id" jdbcType="INTEGER" property="id" />
+        <result column="title" jdbcType="VARCHAR" property="title"/>
+        <result column="start" jdbcType="VARCHAR" property="start"/>
+        <result column="end" jdbcType="VARCHAR" property="end"/>
+        <result column="allDay" jdbcType="BOOLEAN" property="allDay"/>
+        <result column="user_id" jdbcType="BIGINT" property="userId"/>
+    </resultMap>
+<sql id="base_sql">
+    id,title,start,end,allDay,user_id
+</sql>
+
+    <select id="listAll" resultMap="BaseResultMap">
+        select
+        <include refid="base_sql"/>
+        from event
+        where user_id = #{userId}
+    </select>
+
+    <update id="update" parameterType="com.byoa.oa.domain.Event">
+        update event
+        <set>
+            <if test="title != null and title != ''" > `title` = #{title},</if>
+            <if test="start !=null and start != ''"> `start` =#{start},</if>
+            <if test="end !=null and end != ''"> `end` =#{end},</if>
+            <if test="allDay !=null and allDay != ''"> `allDay` =#{allDay},</if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <insert id="insert" parameterType="com.byoa.oa.domain.Event" keyProperty="id" useGeneratedKeys="true">
+    insert into event
+    (title,start,allDay,user_id)
+    values (#{title},#{start},#{allDay},#{userId})
+    </insert>
+
+    <delete id="remove">
+        delete from event where id=#{id}
+    </delete>
+</mapper>
